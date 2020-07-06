@@ -15,7 +15,7 @@ public class MainPlatform : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "movingPlatform")
+        if (collision.gameObject.tag == "movingPlatform")
         {
             Debug.Log("COLLISION DETECTED");
         }
