@@ -5,10 +5,10 @@ using Zenject;
 public class GameManagerScript : MonoBehaviour
 {
     private IGameManager _gameManager;
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     [Inject]
@@ -17,8 +17,9 @@ public class GameManagerScript : MonoBehaviour
         _gameManager = gameManager;
     }
 
-    private void OnMouseDown()
+    private void Update()
     {
-        _gameManager.StopMovingPlatform();
+        if (Input.GetMouseButtonDown(0))
+            _gameManager.StopMovingPlatform();
     }
 }
