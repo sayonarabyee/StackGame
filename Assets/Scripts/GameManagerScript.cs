@@ -4,7 +4,9 @@ using Zenject;
 
 public class GameManagerScript : MonoBehaviour
 {
-    private IGameManager _gameManager;
+    public GameObject prefab;
+    private int platformCounter = 1;
+    private IPlatformManager _platformManager;
 
     // Start is called before the first frame update
     void Start()
@@ -12,14 +14,17 @@ public class GameManagerScript : MonoBehaviour
     }
 
     [Inject]
-    public void Setup(IGameManager gameManager)
+    public void Setup(IPlatformManager platformManager)
     {
-        _gameManager = gameManager;
+        _platformManager = platformManager;
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-            _gameManager.StopMovingPlatform();
+        if (!Input.GetMouseButtonDown(0))
+            return;
+        _platformManager.StopPlatform(platformCounter);
+        _platformManager.Create(prefab, platformCounter);
+        platformCounter++;
     }
 }
