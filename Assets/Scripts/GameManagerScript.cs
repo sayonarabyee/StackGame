@@ -24,7 +24,7 @@ public class GameManagerScript : MonoBehaviour
         if (!Input.GetMouseButtonDown(0))
             return;
         _platformManager.StopPlatform(platformCounter);
-        _platformManager.Create(prefab, platformCounter);
+        _platformManager.CreatePlatform(prefab, platformCounter);
         platformCounter++;
     }
 }
