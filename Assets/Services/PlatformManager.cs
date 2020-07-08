@@ -10,7 +10,6 @@ namespace Services
 {
     public class PlatformManager : IPlatformManager
     {
-        private const string MovingPlatform = "MovingPlatform";
         private const float PosX = 0.01000071f;
         private const float PosY = -0.549999f;
         private const float PosZ = -7.929996f;
@@ -27,7 +26,6 @@ namespace Services
             var position = GetPlatformInitialPosition(platformNumber);
             var instance = Object.Instantiate(platform, position, Quaternion.identity).GetComponent<MovingPlatform>();
             instance.platformSpeed = GetPlatformInitialSpeed(platformNumber);
-            instance.name = MovingPlatform + platformNumber;
         }
 
         private int GetPlatformInitialSpeed(int platformNumber)
