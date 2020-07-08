@@ -8,7 +8,7 @@ namespace DependencyInjection
     {
         public override void InstallBindings()
         {
-            Container.Bind<IGameManager>().To<GameManager>().AsSingle();
+            Container.Bind<IPlatformManager>().To<PlatformManager>().AsSingle();
         }
     }
 }

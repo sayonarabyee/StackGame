@@ -3,6 +3,7 @@
 public class MovingPlatform : MonoBehaviour
 {
     public float platformSpeed = 5f;
+    public bool isDirectionAxisZ = true;
     public Rigidbody rb;
 
     void Start()
@@ -12,6 +13,7 @@ public class MovingPlatform : MonoBehaviour
     
     void Update()
     {
-        transform.position += new Vector3(0, 0, platformSpeed * Time.deltaTime);
+        var speed = platformSpeed * Time.deltaTime;
+        transform.position += new Vector3(0, !isDirectionAxisZ ? speed : 0, isDirectionAxisZ ? speed : 0);
     }
 }
