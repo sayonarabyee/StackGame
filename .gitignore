@@ -67,3 +67,4 @@ crashlytics-build.properties
 /.idea/.idea.StackGame.dir/.idea/vcs.xml
 /.idea/.idea.StackGame.dir/.idea/contentModel.xml
 /.idea/.idea.StackGame/
+/Assets/Plugins/Zenject/
