@@ -2,16 +2,12 @@
 using UnityEngine;
 using Zenject;
 
-public class GameManagerScript : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public GameObject prefab;
-    private int platformCounter = 1;
+    
+    private int _platformCounter = 1;
     private IPlatformManager _platformManager;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
 
     [Inject]
     public void Setup(IPlatformManager platformManager)
@@ -19,12 +15,14 @@ public class GameManagerScript : MonoBehaviour
         _platformManager = platformManager;
     }
 
+    
     private void Update()
     {
         if (!Input.GetMouseButtonDown(0))
             return;
-        _platformManager.StopPlatform(platformCounter);
-        _platformManager.CreatePlatform(prefab, platformCounter);
-        platformCounter++;
+        
+        _platformManager.StopPlatform();
+        _platformManager.CreatePlatform(prefab, _platformCounter);
+        _platformCounter++;
     }
 }

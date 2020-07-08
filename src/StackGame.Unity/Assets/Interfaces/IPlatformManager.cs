@@ -4,7 +4,7 @@ namespace Interfaces
 {
     public interface IPlatformManager
     {
-        void StopPlatform(int counter);
+        void StopPlatform();
         void CreatePlatform(GameObject platform, int platformNumber);
     }
 }
