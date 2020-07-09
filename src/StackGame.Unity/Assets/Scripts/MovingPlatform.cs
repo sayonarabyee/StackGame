@@ -2,11 +2,14 @@
 
 public class MovingPlatform : MonoBehaviour
 {
-    public float speed;
-    
+    public float initialSpeed = 4;
+    public bool isSpeedAxisZ;
+
+
     void Update()
     {
-        var speed = this.speed * Time.deltaTime;
-        transform.position += new Vector3(0, 0, speed);
+        var speed = initialSpeed * Time.deltaTime;
+        var speedVector = new Vector3(isSpeedAxisZ ? 0 : speed, 0, isSpeedAxisZ ? speed : 0);
+        transform.position += speedVector;
     }
 }
