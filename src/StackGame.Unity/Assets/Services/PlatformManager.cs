@@ -15,30 +15,24 @@ namespace Services
         public void StopPlatform()
         {
             var platform = Object.FindObjectsOfType<MovingPlatform>().First();
-            platform.speed = 0;
+            platform.initialSpeed = 0;
         }
 
         public void CreatePlatform(GameObject platform, int platformNumber)
         {
             var position = GetPlatformInitialPosition(platformNumber);
             var instance = Object.Instantiate(platform, position, Quaternion.identity).GetComponent<MovingPlatform>();
-            instance.speed = GetPlatformInitialSpeed(platformNumber);
+            instance.isSpeedAxisZ = platformNumber % 2 == 0;
+            instance.initialSpeed = 4;
         }
 
-        private int GetPlatformInitialSpeed(int platformNumber)
-        {
-            if(platformNumber % 2 == 0)
-                return DefaultSpeed;
-            
-            return -DefaultSpeed;
-        }
         
         private Vector3 GetPlatformInitialPosition(int platformNumber)
         {
             if(platformNumber % 2 == 0)
                 return new Vector3(PosX, PosY + platformNumber * Height, PosZ);
             
-            return new Vector3(PosX, PosY + platformNumber * Height, -1 * PosZ);
+            return new Vector3(PosZ, PosY + platformNumber * Height,  PosX);
 
         }
     }
