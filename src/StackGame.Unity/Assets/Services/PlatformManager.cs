@@ -1,6 +1,9 @@
+using System.Diagnostics;
 using System.Linq;
 using Interfaces;
 using UnityEngine;
+using System.Collections;
+using UnityEditor;
 
 namespace Services
 {
@@ -17,6 +20,22 @@ namespace Services
             var platform = Object.FindObjectsOfType<MovingPlatform>().First();
             platform.initialSpeed = 0;
         }
+
+        public void CutPlatform(int platformNumber)
+        {
+            var currentPlatform = Object.FindObjectsOfType<MovingPlatform>().First();
+            var lastPlatform = Object.FindObjectsOfType<MovingPlatform>().ElementAtOrDefault(1);
+            if (platformNumber % 2 == 0)
+
+            {
+                float hangoverZ = currentPlatform.transform.position.z - lastPlatform.transform.position.z;
+                float newZSize = lastPlatform.transform.localScale.z - Mathf.Abs(hangoverZ);
+                float newZPos = lastPlatform.transform.position.z + (hangoverZ / 2);
+                currentPlatform.transform.localScale = new Vector3(currentPlatform.transform.localScale.x, currentPlatform.transform.localScale.y, newZSize);
+                currentPlatform.transform.position = new Vector3(currentPlatform.transform.position.x, currentPlatform.transform.position.y, newZPos);
+            }
+        }
+
 
         public void CreatePlatform(GameObject platform, int platformNumber)
         {
