@@ -1,28 +1,32 @@
 ﻿using Interfaces;
+using Services;
 using UnityEngine;
-using Zenject;
 
 public class GameManager : MonoBehaviour
 {
     public GameObject prefab;
-    
-    private int _platformCounter = 1;
-    private IPlatformManager _platformManager;
+    public IPlatformManager PlatformManager { get; private set; }
 
-    [Inject]
-    public void Setup(IPlatformManager platformManager)
+    private void Start()
     {
-        _platformManager = platformManager;
+        StartGame();
     }
 
-    
-    private void Update()
+    public void StartGame()
     {
-        if (!Input.GetMouseButtonDown(0))
-            return;
-        
-        _platformManager.StopPlatform();
-        _platformManager.CreatePlatform(prefab, _platformCounter);
-        _platformCounter++;
+        PlatformManager = new PlatformManager();
+        PlatformManager.CreatePlatform(prefab);
+    }
+
+    private void OnMouseDown()
+    {
+        CreateNewPlatform();
+    }
+
+
+    public void CreateNewPlatform()
+    {
+        PlatformManager.StopPlatform();
+        PlatformManager.CreatePlatform(prefab);
     }
 }
