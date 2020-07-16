@@ -32,6 +32,15 @@ namespace Tests.EditorModeTests
         }
         
         [Test]
+        public void StartGame_CorrectStartGame_FirstPlatformMoving()
+        {
+            _gameManager.StartGame();
+            var platform = Object.FindObjectsOfType<MovingPlatform>().First();
+            
+            Assert.Greater(platform.initialSpeed, 0);
+        }
+        
+        [Test]
         public void CreateNewPlatform_CorrectData_IncreasePlatformsCount()
         {
             _gameManager.StartGame();
@@ -41,6 +50,26 @@ namespace Tests.EditorModeTests
             var count = Object.FindObjectsOfType<MovingPlatform>().Length;
 
             Assert.AreEqual(count, initialCount+1);
+        }
+        
+        [Test]
+        public void CreateNewPlatform_CorrectData_CurrentPlatformMoving()
+        {
+            _gameManager.StartGame();
+            _gameManager.CreateNewPlatform();
+            var platform = Object.FindObjectsOfType<MovingPlatform>().First();
+
+            Assert.Greater(platform.initialSpeed, 0);
+        }
+        
+        [Test]
+        public void CreateNewPlatform_CorrectData_PreviousPlatformStopped()
+        {
+            _gameManager.StartGame();
+            _gameManager.CreateNewPlatform();
+            var firstPlatform = Object.FindObjectsOfType<MovingPlatform>().ElementAtOrDefault(1);
+
+            Assert.AreEqual(0, firstPlatform.initialSpeed);
         }
         
         [Test]
