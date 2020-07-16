@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
     public void CreateNewPlatform()
     {
         PlatformManager.StopPlatform();
+        PlatformManager.CutPlatform();
         PlatformManager.CreatePlatform(prefab);
     }
 }

@@ -7,5 +7,6 @@ namespace Interfaces
         int PlatformsCount { get; }
         void StopPlatform(int? platformNumber = null);
         void CreatePlatform(GameObject platform);
+        void CutPlatform(int platformNumber);
     }
 }
