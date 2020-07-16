@@ -32,6 +32,7 @@ namespace Services
             platform.initialSpeed = 0;
         }
 
+        //TODO: s: refactor it
         public void CutPlatform()
         {
             var currentPlatform = Object.FindObjectsOfType<MovingPlatform>().First();
