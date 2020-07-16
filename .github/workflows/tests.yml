@@ -24,5 +24,4 @@ jobs:
       env:
         UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
       with:
-        projectPath: /src/StackGame.Unity
         unityVersion: 2018.4.24f1
