@@ -6,5 +6,6 @@ namespace Interfaces
     {
         void StopPlatform();
         void CreatePlatform(GameObject platform, int platformNumber);
+        void CutPlatform(int platformNumber);
     }
 }

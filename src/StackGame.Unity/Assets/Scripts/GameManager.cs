@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
             return;
         
         _platformManager.StopPlatform();
+        _platformManager.CutPlatform(_platformCounter);
         _platformManager.CreatePlatform(prefab, _platformCounter);
         _platformCounter++;
     }
