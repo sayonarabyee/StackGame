@@ -7,11 +7,6 @@ namespace Services
     public class PlatformManager : IPlatformManager
     {
         public int PlatformsCount { get; private set; }
-        private const float PosX = 0.01000071f;
-        private const float PosY = -0.549999f;
-        private const float PosZ = -7.929996f;
-        private const float Height = 0.27313f;
-        private const int DefaultSpeed = 4;
 
         public PlatformManager()
         {
@@ -61,8 +56,10 @@ namespace Services
                 var hangoverX = currentPlatform.transform.position.x - lastPlatform.transform.position.x;
                 var newXSize = lastPlatform.transform.localScale.x - Mathf.Abs(hangoverX);
                 var newXPos = lastPlatform.transform.position.x + (hangoverX / 2);
-                currentPlatform.transform.localScale = new Vector3(newXSize, currentPlatform.transform.localScale.y, currentPlatform.transform.localScale.z);
-                currentPlatform.transform.position = new Vector3(newXPos, currentPlatform.transform.position.y, currentPlatform.transform.position.z);
+                currentPlatform.transform.localScale = new Vector3(newXSize, currentPlatform.transform.localScale.y,
+                    currentPlatform.transform.localScale.z);
+                currentPlatform.transform.position = new Vector3(newXPos, currentPlatform.transform.position.y,
+                    currentPlatform.transform.position.z);
             }
             else if (!IsAxisZPlatform(PlatformsCount))
             {
@@ -77,8 +74,10 @@ namespace Services
                 var hangoverX1 = currentPlatform.transform.position.x - lastPlatform.transform.position.x;
                 var newXSize1 = lastPlatform.transform.localScale.x - Mathf.Abs(hangoverX1);
                 var newXPos1 = lastPlatform.transform.position.x + (hangoverX1 / 2);
-                currentPlatform.transform.localScale = new Vector3(newXSize1, currentPlatform.transform.localScale.y, currentPlatform.transform.localScale.z);
-                currentPlatform.transform.position = new Vector3(newXPos1, currentPlatform.transform.position.y, currentPlatform.transform.position.z);
+                currentPlatform.transform.localScale = new Vector3(newXSize1, currentPlatform.transform.localScale.y,
+                    currentPlatform.transform.localScale.z);
+                currentPlatform.transform.position = new Vector3(newXPos1, currentPlatform.transform.position.y,
+                    currentPlatform.transform.position.z);
             }
         }
 
@@ -88,7 +87,7 @@ namespace Services
             var position = GetPlatformInitialPosition(PlatformsCount);
             var instance = Object.Instantiate(platform, position, Quaternion.identity).GetComponent<MovingPlatform>();
             instance.isSpeedAxisZ = IsAxisZPlatform(PlatformsCount);
-            instance.initialSpeed = DefaultSpeed;
+            instance.initialSpeed = Constants.MovingPlatform.InitialSpeed;
             instance.transform.localScale = previousPlatform != null
                 ? previousPlatform.transform.localScale
                 : instance.transform.localScale;
@@ -101,12 +100,20 @@ namespace Services
             var previousPlatform = Object.FindObjectsOfType<MovingPlatform>()?.FirstOrDefault();
             if (previousPlatform == null)
                 return IsAxisZPlatform(platformNumber)
-                    ? new Vector3(PosX, PosY + platformNumber * Height, PosZ)
-                    : new Vector3(PosZ, PosY + platformNumber * Height, PosX);
-            
+                    ? new Vector3(Constants.MovingPlatform.PosX,
+                        Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
+                        Constants.MovingPlatform.PosZ)
+                    : new Vector3(Constants.MovingPlatform.PosZ,
+                        Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
+                        Constants.MovingPlatform.PosX);
+
             return IsAxisZPlatform(platformNumber)
-                ? new Vector3(previousPlatform.transform.position.x, PosY + platformNumber * Height, PosZ)
-                : new Vector3(PosZ, PosY + platformNumber * Height, previousPlatform.transform.position.z);
+                ? new Vector3(previousPlatform.transform.position.x,
+                    Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
+                    Constants.MovingPlatform.PosZ)
+                : new Vector3(Constants.MovingPlatform.PosZ,
+                    Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
+                    previousPlatform.transform.position.z);
         }
 
         private bool IsAxisZPlatform(int platformNumber)
