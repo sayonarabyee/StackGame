@@ -107,15 +107,11 @@ namespace Tests.PlayModeTests
             return gameGameObject.GetComponent<GameManager>();
         }
 
-        private WaitForSeconds WaitForNextPlatform(MovingPlatform previous = null)
+        private WaitForSeconds WaitForNextPlatform()
         {
-            var previousPosition = previous == null ? Constants.Cube.InitialPosZ : previous.transform.position.z;
+            var previousPosition = Constants.Cube.InitialPosZ;
             var platform = Object.FindObjectsOfType<MovingPlatform>().Last();
             var distance = previousPosition - platform.transform.position.z;
-            if (Object.FindObjectsOfType<MovingPlatform>().Length % 2 != 0)
-            {
-                distance = Math.Abs(previous.transform.position.x - platform.transform.position.x);
-            }
             var waitTime = distance / platform.initialSpeed;
             return new WaitForSeconds(waitTime);
         }
