@@ -28,6 +28,7 @@ namespace Services
         }
 
         //TODO: s: refactor it please
+        //TODO: s: write test for it
         public void CutPlatform()
         {
             var currentPlatform = Object.FindObjectsOfType<MovingPlatform>().First();
@@ -100,19 +101,19 @@ namespace Services
             var previousPlatform = Object.FindObjectsOfType<MovingPlatform>()?.FirstOrDefault();
             if (previousPlatform == null)
                 return IsAxisZPlatform(platformNumber)
-                    ? new Vector3(Constants.MovingPlatform.PosX,
-                        Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
-                        Constants.MovingPlatform.PosZ)
-                    : new Vector3(Constants.MovingPlatform.PosZ,
-                        Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
-                        Constants.MovingPlatform.PosX);
+                    ? new Vector3(Constants.MovingPlatform.InitialPosX,
+                        Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
+                        Constants.MovingPlatform.InitialPosZ)
+                    : new Vector3(Constants.MovingPlatform.InitialPosZ,
+                        Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
+                        Constants.MovingPlatform.InitialPosX);
 
             return IsAxisZPlatform(platformNumber)
                 ? new Vector3(previousPlatform.transform.position.x,
-                    Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
-                    Constants.MovingPlatform.PosZ)
-                : new Vector3(Constants.MovingPlatform.PosZ,
-                    Constants.MovingPlatform.PosY + platformNumber * Constants.MovingPlatform.Height,
+                    Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
+                    Constants.MovingPlatform.InitialPosZ)
+                : new Vector3(Constants.MovingPlatform.InitialPosZ,
+                    Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
                     previousPlatform.transform.position.z);
         }
 

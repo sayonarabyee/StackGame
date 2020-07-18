@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Interfaces;
+using NUnit.Framework;
+using Services;
 using UnityEngine;
 
 namespace Tests.EditorModeTests
@@ -7,10 +9,13 @@ namespace Tests.EditorModeTests
     public abstract  class TestClassBase
     {
         protected GameManager GameManager;
+        protected IPlatformManager PlatformManager;
+        
         [SetUp]
         public void Setup()
         {
             GameManager = GetGameManager();
+            PlatformManager = new PlatformManager();
         }
         
         [TearDown]
