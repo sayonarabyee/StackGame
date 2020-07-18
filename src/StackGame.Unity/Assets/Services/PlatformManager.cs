@@ -85,37 +85,46 @@ namespace Services
         public void CreatePlatform(GameObject platform)
         {
             var previousPlatform = Object.FindObjectsOfType<MovingPlatform>()?.FirstOrDefault();
-            var position = GetPlatformInitialPosition(PlatformsCount);
-            var instance = Object.Instantiate(platform, position, Quaternion.identity).GetComponent<MovingPlatform>();
-            instance.isSpeedAxisZ = IsAxisZPlatform(PlatformsCount);
-            instance.initialSpeed = Constants.MovingPlatform.InitialSpeed;
-            instance.transform.localScale = previousPlatform != null
+            var initialPosition = GetPlatformInitialPosition(PlatformsCount);
+            var currentPlatform = Object.Instantiate(platform, initialPosition, Quaternion.identity).GetComponent<MovingPlatform>();
+            currentPlatform.isSpeedAxisZ = IsAxisZPlatform(PlatformsCount);
+            currentPlatform.initialSpeed = Constants.MovingPlatform.InitialSpeed;
+            var currentPlatformTransform = currentPlatform.transform;
+            currentPlatformTransform.localScale = previousPlatform != null
                 ? previousPlatform.transform.localScale
-                : instance.transform.localScale;
+                : currentPlatformTransform.localScale;
             PlatformsCount++;
         }
 
         public bool PlatformMissed()
         {
             var platforms = Object.FindObjectsOfType<MovingPlatform>();
-            var current = platforms.First();
+            var current = platforms.First().transform;
+            var currentPosition = current.position;
+            var currentScale = current.localScale;
             bool isAxisXMissed;
             bool isAxisZMissed;
             
             if (platforms.Length == 1)
             {
-                isAxisZMissed = IsAxisMissed(current.transform.position.z, Constants.Cube.InitialPosZ,
-                    current.transform.localScale.z, Constants.Cube.InitialScaleZ);
-                isAxisXMissed = IsAxisMissed(current.transform.position.x, Constants.Cube.InitialPosX,
-                    current.transform.localScale.x, Constants.Cube.InitialScaleX);
+                isAxisZMissed = IsAxisMissed(currentPosition.z, Constants.Cube.InitialPosZ,
+                    currentScale.z, Constants.Cube.InitialScaleZ);
+                isAxisXMissed = IsAxisMissed(currentPosition.x, Constants.Cube.InitialPosX,
+                    currentScale.x, Constants.Cube.InitialScaleX);
             }
             else
             {
-                var previous = platforms.ElementAtOrDefault(1);
-                isAxisZMissed = IsAxisMissed(current.transform.position.z, previous.transform.position.z,
-                    current.transform.localScale.z, previous.transform.localScale.z);
-                isAxisXMissed = IsAxisMissed(current.transform.position.x, previous.transform.position.x,
-                    current.transform.localScale.x, previous.transform.localScale.x);
+                var platform = platforms.ElementAtOrDefault(1)?.transform;
+                
+                if (platform == null)
+                    return false;
+                
+                var previousPosition = platform.position;
+                var previousScale = platform.localScale;
+                isAxisZMissed = IsAxisMissed(currentPosition.z, previousPosition.z,
+                    currentScale.z, previousScale.z);
+                isAxisXMissed = IsAxisMissed(currentPosition.x, previousPosition.x,
+                    currentScale.x, previousScale.x);
             }
 
             return isAxisXMissed || isAxisZMissed;
@@ -123,7 +132,7 @@ namespace Services
 
         #region Private Methods
 
-        private Vector3 GetPlatformInitialPosition(int platformNumber)
+        private static Vector3 GetPlatformInitialPosition(int platformNumber)
         {
             var previousPlatform = Object.FindObjectsOfType<MovingPlatform>()?.FirstOrDefault();
             if (previousPlatform == null)
@@ -135,21 +144,22 @@ namespace Services
                         Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
                         Constants.MovingPlatform.InitialPosX);
 
+            var previousPlatformPosition = previousPlatform.transform.position;
             return IsAxisZPlatform(platformNumber)
-                ? new Vector3(previousPlatform.transform.position.x,
+                ? new Vector3(previousPlatformPosition.x,
                     Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
                     Constants.MovingPlatform.InitialPosZ)
                 : new Vector3(Constants.MovingPlatform.InitialPosZ,
                     Constants.MovingPlatform.InitialPosY + platformNumber * Constants.MovingPlatform.InitialScaleY,
-                    previousPlatform.transform.position.z);
+                    previousPlatformPosition.z);
         }
 
-        private bool IsAxisZPlatform(int platformNumber)
+        private static bool IsAxisZPlatform(int platformNumber)
         {
             return platformNumber % 2 == 0;
         }
 
-        private bool IsAxisMissed(float currentPosition, float previousPosition, float currentScale,
+        private static bool IsAxisMissed(float currentPosition, float previousPosition, float currentScale,
             float previousScale)
         {
             var currentMin = currentPosition - currentScale / 2;
