@@ -94,7 +94,17 @@ namespace Services
                 : instance.transform.localScale;
             PlatformsCount++;
         }
+        
+        public bool PlatformMissed()
+        {
+            var platforms = Object.FindObjectsOfType<MovingPlatform>();
+            var current = platforms.First();
+            var prev = platforms.ElementAtOrDefault(1);
+            var cur = current.transform.position.x;
+            return false;
+        }
 
+        #region Private Methods
 
         private Vector3 GetPlatformInitialPosition(int platformNumber)
         {
@@ -121,5 +131,7 @@ namespace Services
         {
             return platformNumber % 2 == 0;
         }
+        
+        #endregion
     }
 }
