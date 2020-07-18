@@ -94,14 +94,31 @@ namespace Services
                 : instance.transform.localScale;
             PlatformsCount++;
         }
-        
+
         public bool PlatformMissed()
         {
             var platforms = Object.FindObjectsOfType<MovingPlatform>();
             var current = platforms.First();
-            var prev = platforms.ElementAtOrDefault(1);
-            var cur = current.transform.position.x;
-            return false;
+            bool isAxisXMissed;
+            bool isAxisZMissed;
+            
+            if (platforms.Length == 1)
+            {
+                isAxisZMissed = IsAxisMissed(current.transform.position.z, Constants.Cube.InitialPosZ,
+                    current.transform.localScale.z, Constants.Cube.InitialScaleZ);
+                isAxisXMissed = IsAxisMissed(current.transform.position.x, Constants.Cube.InitialPosX,
+                    current.transform.localScale.x, Constants.Cube.InitialScaleX);
+            }
+            else
+            {
+                var previous = platforms.ElementAtOrDefault(1);
+                isAxisZMissed = IsAxisMissed(current.transform.position.z, previous.transform.position.z,
+                    current.transform.localScale.z, previous.transform.localScale.z);
+                isAxisXMissed = IsAxisMissed(current.transform.position.x, previous.transform.position.x,
+                    current.transform.localScale.x, previous.transform.localScale.x);
+            }
+
+            return isAxisXMissed || isAxisZMissed;
         }
 
         #region Private Methods
@@ -131,7 +148,18 @@ namespace Services
         {
             return platformNumber % 2 == 0;
         }
-        
+
+        private bool IsAxisMissed(float currentPosition, float previousPosition, float currentScale,
+            float previousScale)
+        {
+            var currentMin = currentPosition - currentScale / 2;
+            var currentMax = currentPosition + currentScale / 2;
+            var previousMin = previousPosition - previousScale / 2;
+            var previousMax = previousPosition + previousScale / 2;
+
+            return previousMin > currentMax || previousMax < currentMin;
+        }
+
         #endregion
     }
 }
