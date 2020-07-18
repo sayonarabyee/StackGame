@@ -31,7 +31,7 @@ namespace Tests.EditorModeTests
             GameManager.StartGame();
             var platform = Object.FindObjectsOfType<MovingPlatform>().First();
             
-            Assert.Greater(platform.initialSpeed, 0);
+            Assert.AreEqual(platform.initialSpeed, Constants.MovingPlatform.InitialSpeed);
         }
 
         #endregion
@@ -57,7 +57,7 @@ namespace Tests.EditorModeTests
             GameManager.CreateNewPlatform();
             var platform = Object.FindObjectsOfType<MovingPlatform>().First();
 
-            Assert.Greater(platform.initialSpeed, 0);
+            Assert.GreaterOrEqual(platform.initialSpeed, Constants.MovingPlatform.InitialSpeed);
         }
         
         [Test]
