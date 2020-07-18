@@ -22,11 +22,11 @@ public class GameManager : MonoBehaviour
 
     private void OnMouseDown()
     {
-        CreateNewPlatform();
+        UpdateGameState();
     }
 
 
-    public void CreateNewPlatform()
+    public void UpdateGameState()
     {
         PlatformManager.StopPlatform();
         
