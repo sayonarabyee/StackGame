@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     public GameObject prefab;
     public IPlatformManager PlatformManager { get; private set; }
+    public bool IsGameOver;
 
     private void Start()
     {
@@ -15,18 +16,26 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         PlatformManager = new PlatformManager();
+        IsGameOver = false;
         PlatformManager.CreatePlatform(prefab);
     }
 
     private void OnMouseDown()
     {
-        CreateNewPlatform();
+        UpdateGameState();
     }
 
 
-    public void CreateNewPlatform()
+    public void UpdateGameState()
     {
         PlatformManager.StopPlatform();
+        
+        if (PlatformManager.PlatformMissed())
+        {
+            IsGameOver = true;
+            return;
+        }
+        
         PlatformManager.CutPlatform();
         PlatformManager.CreatePlatform(prefab);
     }

@@ -2,7 +2,7 @@
 
 public class MovingPlatform : MonoBehaviour
 {
-    public float initialSpeed = 4;
+    public float initialSpeed = Constants.MovingPlatform.InitialSpeed;
     public bool isSpeedAxisZ;
 
 
