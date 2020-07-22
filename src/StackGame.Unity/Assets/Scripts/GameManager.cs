@@ -5,8 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject prefab;
+    public Camera gameCamera;
+    public bool isGameOver;
+
     public IPlatformManager PlatformManager { get; private set; }
-    public bool IsGameOver;
+    public ICameraManager CameraManager { get; private set; }
 
     private void Start()
     {
@@ -16,7 +19,8 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         PlatformManager = new PlatformManager();
-        IsGameOver = false;
+        CameraManager = new CameraManager(gameCamera);
+        isGameOver = false;
         PlatformManager.CreatePlatform(prefab);
     }
 
@@ -32,11 +36,12 @@ public class GameManager : MonoBehaviour
         
         if (PlatformManager.PlatformMissed())
         {
-            IsGameOver = true;
+            isGameOver = true;
             return;
         }
         
         PlatformManager.CutPlatform();
+        CameraManager.MoveUp(Constants.MovingPlatform.InitialScaleY);
         PlatformManager.CreatePlatform(prefab);
     }
 }
