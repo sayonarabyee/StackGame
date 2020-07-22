@@ -1,5 +1,6 @@
 ﻿public static class Constants
 {
+    public const float Delta = 0.02f;
     public static class MovingPlatform
     {
         public const float InitialSpeed = 4;

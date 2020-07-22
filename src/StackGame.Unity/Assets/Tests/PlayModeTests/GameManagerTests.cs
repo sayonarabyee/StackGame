@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Linq;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
-using Object = UnityEngine.Object;
 
 namespace Tests.PlayModeTests
 {
     public class GameManagerTests
     {
         private GameManager _gameManager;
-
         #region Configuration
 
         [SetUp]
@@ -23,11 +21,14 @@ namespace Tests.PlayModeTests
         [TearDown]
         public void Teardown()
         {
-            Object.DestroyImmediate(_gameManager.gameObject);
-            foreach (var platform in Object.FindObjectsOfType<MovingPlatform>())
+            var platforms = SceneManager.GetActiveScene()
+                .GetRootGameObjects()
+                .Where(x=>x.CompareTag("movingPlatform"));
+            foreach (var platform in platforms)
             {
-                Object.DestroyImmediate(platform);
+                Object.Destroy(platform);
             }
+            Object.Destroy(_gameManager.gameObject);
         }
 
         #endregion
@@ -37,7 +38,6 @@ namespace Tests.PlayModeTests
         [UnityTest]
         public IEnumerator UpdateGameState_CorrectData_IncreasePlatformsCount()
         {
-            _gameManager.StartGame();
             var initialCount = Object.FindObjectsOfType<MovingPlatform>().Length;
 
             yield return WaitForNextPlatform();
@@ -51,7 +51,6 @@ namespace Tests.PlayModeTests
         [UnityTest]
         public IEnumerator UpdateGameState_CorrectData_CurrentPlatformMoving()
         {
-            _gameManager.StartGame();
             var platform = Object.FindObjectsOfType<MovingPlatform>().Last();
 
             yield return WaitForNextPlatform();
@@ -65,7 +64,6 @@ namespace Tests.PlayModeTests
         [UnityTest]
         public IEnumerator UpdateGameState_CorrectData_PreviousPlatformStopped()
         {
-            _gameManager.StartGame();
             yield return WaitForNextPlatform();
 
             _gameManager.UpdateGameState();
@@ -73,19 +71,52 @@ namespace Tests.PlayModeTests
 
             Assert.AreEqual(0, firstPlatform.initialSpeed);
         }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_SecondPlatform_CorrectPosition()
+        {
+            yield return WaitForNextPlatform();
 
-        //TODO: v: fix it later
-        /*[UnityTest]
+            _gameManager.UpdateGameState();
+            var platformPosition = Object.FindObjectsOfType<MovingPlatform>().FirstOrDefault().transform.position;
+
+            Assert.AreEqual(Constants.MovingPlatform.InitialPosZ, platformPosition.x, Constants.Delta);
+            Assert.AreEqual(Constants.MovingPlatform.InitialPosY + Constants.MovingPlatform.InitialScaleY,
+                platformPosition.y, Constants.Delta);
+            Assert.AreEqual(Constants.MovingPlatform.InitialPosX, platformPosition.z, Constants.Delta);
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_SecondPlatform_CorrectSpeed()
+        {
+            yield return WaitForNextPlatform();
+
+            _gameManager.UpdateGameState();
+            var platform = Object.FindObjectsOfType<MovingPlatform>().FirstOrDefault();
+
+            Assert.LessOrEqual(Constants.MovingPlatform.InitialSpeed, platform.initialSpeed);
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_SecondPlatform_CorrectSpeedVector()
+        {
+            yield return WaitForNextPlatform();
+
+            _gameManager.UpdateGameState();
+            var platform = Object.FindObjectsOfType<MovingPlatform>().FirstOrDefault();
+
+            Assert.False(platform.isSpeedAxisZ);
+        }
+
+        [UnityTest]
         public IEnumerator UpdateGameState_TenTimes_AllPlatformsNotNull()
         {
-            _gameManager.StartGame();
             var expectedPlatformCount = 10;
 
             for (var i = 1; i < expectedPlatformCount; i++)
             {
-                var platform = Object.FindObjectsOfType<MovingPlatform>().ElementAtOrDefault(1);
-                yield return WaitForNextPlatform(platform);
-
+                var prevPlatform = Object.FindObjectsOfType<MovingPlatform>()?.ElementAtOrDefault(1);
+                yield return WaitForNextPlatform(prevPlatform);
                 _gameManager.UpdateGameState();
             }
 
@@ -95,7 +126,29 @@ namespace Tests.PlayModeTests
 
             Assert.AreEqual(expectedPlatformCount, count);
             Assert.AreEqual(0, nullPlatforms);
-        }*/
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_CameraPosition_CameraYPositionIncreased()
+        {
+            var cameraPos = _gameManager.gameCamera.gameObject.transform.position;
+            yield return WaitForNextPlatform();
+
+            _gameManager.UpdateGameState();
+            
+            Assert.Greater(_gameManager.gameCamera.transform.position.y, cameraPos.y);
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_GameOver_CameraYPositionNotIncreased()
+        {
+            var cameraPos = _gameManager.gameCamera.gameObject.transform.position;
+            
+            yield return null;
+            _gameManager.UpdateGameState();
+
+            Assert.AreEqual(_gameManager.gameCamera.transform.position.y, cameraPos.y, Constants.Delta);
+        }
 
         #endregion
 
@@ -107,12 +160,24 @@ namespace Tests.PlayModeTests
             return gameGameObject.GetComponent<GameManager>();
         }
 
-        private WaitForSeconds WaitForNextPlatform()
+        private static WaitForSeconds WaitForNextPlatform(MovingPlatform platform = null)
         {
-            var previousPosition = Constants.Cube.InitialPosZ;
-            var platform = Object.FindObjectsOfType<MovingPlatform>().Last();
-            var distance = previousPosition - platform.transform.position.z;
-            var waitTime = distance / platform.initialSpeed;
+            float previousPosition;
+            if (platform == null)
+                previousPosition = Constants.Cube.InitialPosZ;
+            else
+            {
+                var previousPlatformPosition = platform.transform.position;
+                previousPosition = Object.FindObjectsOfType<MovingPlatform>().Length % 2 == 0
+                    ? previousPlatformPosition.z
+                    : previousPlatformPosition.x;
+            }
+
+            var currentPlatform = Object.FindObjectsOfType<MovingPlatform>().First();
+            var distance = previousPosition - currentPlatform.transform.position.z;
+            if (distance < 1)
+                distance = previousPosition - currentPlatform.transform.position.x;
+            var waitTime = distance / currentPlatform.initialSpeed;
             return new WaitForSeconds(waitTime);
         }
 
