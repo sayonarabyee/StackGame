@@ -5,10 +5,9 @@ namespace Interfaces
     public interface IPlatformManager
     {
         int PlatformsCount { get; }
-        void StopPlatform(int? platformNumber = null);
-        void CreatePlatform(GameObject platform);
-
-        bool PlatformMissed();
+        MovingPlatform CreatePlatform(GameObject platform);
         void CutPlatform();
+        bool PlatformMissed();
+        void StopPlatform(int? platformNumber = null);
     }
 }
