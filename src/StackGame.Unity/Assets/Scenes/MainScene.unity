@@ -179,7 +179,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &534669902
 GameObject:
@@ -257,12 +257,18 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
   m_LocalRotation: {x: -0.089339934, y: 0.90123516, z: -0.22341727, w: -0.36038643}
-  m_LocalPosition: {x: 15.395833, y: 11.033822, z: 16.2726}
+  m_LocalPosition: {x: 15, y: 13, z: 17}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_Father: {fileID: 1695899954}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1695899954 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8247199589996153149, guid: 4cea2918fed00354c8430117a7b4378b,
+    type: 3}
+  m_PrefabInstance: {fileID: 8247199590202661375}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8247199590202661375
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -308,7 +314,7 @@ PrefabInstance:
     - target: {fileID: 8247199589996153149, guid: 4cea2918fed00354c8430117a7b4378b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8247199589996153149, guid: 4cea2918fed00354c8430117a7b4378b,
         type: 3}
@@ -325,6 +331,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8247199589996153150, guid: 4cea2918fed00354c8430117a7b4378b,
+        type: 3}
+      propertyPath: camera
+      value: 
+      objectReference: {fileID: 534669904}
+    - target: {fileID: 8247199589996153150, guid: 4cea2918fed00354c8430117a7b4378b,
+        type: 3}
+      propertyPath: Camera
+      value: 
+      objectReference: {fileID: 534669904}
+    - target: {fileID: 8247199589996153150, guid: 4cea2918fed00354c8430117a7b4378b,
+        type: 3}
+      propertyPath: gameCamera
+      value: 
+      objectReference: {fileID: 534669904}
     - target: {fileID: 8247199589996153151, guid: 4cea2918fed00354c8430117a7b4378b,
         type: 3}
       propertyPath: m_Name
