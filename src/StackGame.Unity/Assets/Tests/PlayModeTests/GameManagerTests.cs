@@ -47,6 +47,18 @@ namespace Tests.PlayModeTests
 
             Assert.AreEqual(count, initialCount + 1);
         }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_CorrectData_ScoreGreaterThanZero()
+        {
+            _gameManager.StartGame();
+
+            yield return WaitForNextPlatform();
+
+            _gameManager.UpdateGameState();
+
+            Assert.Greater(_gameManager.ScoreManager.Score, 0);
+        }
 
         [UnityTest]
         public IEnumerator UpdateGameState_CorrectData_CurrentPlatformMoving()

@@ -17,6 +17,22 @@ namespace Tests.EditorModeTests
         }
         
         [Test]
+        public void StartGame_CorrectStartGame_ScoreManagerNotNull()
+        {
+            GameManager.StartGame();
+            
+            Assert.NotNull(GameManager.ScoreManager);
+        }
+        
+        [Test]
+        public void StartGame_CorrectStartGame_ScoreIsZero()
+        {
+            GameManager.StartGame();
+            
+            Assert.Zero(GameManager.ScoreManager.Score);
+        }
+        
+        [Test]
         public void StartGame_CorrectStartGame_FirstPlatformNotNull()
         {
             GameManager.StartGame();
