@@ -8,9 +8,13 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public GameObject prefab;
+    public Camera gameCamera;
+    public bool isGameOver;
+
     public IPlatformManager PlatformManager { get; private set; }
     public IScoreManager ScoreManager { get; private set; }
-    public bool IsGameOver;
+        public ICameraManager CameraManager { get; private set; }
+public bool IsGameOver;
 
     private List<MovingPlatform> _platforms; 
 
@@ -23,11 +27,13 @@ public class GameManager : MonoBehaviour
     {
         PlatformManager = new PlatformManager();
         ScoreManager = new ScoreManager();
-        IsGameOver = false;
+        CameraManager = new CameraManager(gameCamera);
         _platforms = new List<MovingPlatform>
         {
             PlatformManager.CreatePlatform(prefab)
         };
+        isGameOver = false;
+        PlatformManager.CreatePlatform(prefab);
     }
 
     private void OnMouseDown()
@@ -41,12 +47,13 @@ public class GameManager : MonoBehaviour
         
         if (PlatformManager.PlatformMissed())
         {
-            IsGameOver = true;
+            isGameOver = true;
             return;
         }
         
         PlatformManager.CutPlatform();
         ScoreManager.UpdateScore(_platforms.LastOrDefault(), _platforms.ElementAtOrDefault(_platforms.Count-2));
         _platforms.Add(PlatformManager.CreatePlatform(prefab));
+        CameraManager.MoveUp(Constants.MovingPlatform.InitialScaleY);
     }
 }
