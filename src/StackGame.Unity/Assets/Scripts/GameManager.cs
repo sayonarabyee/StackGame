@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Interfaces;
 using Services;
@@ -13,10 +12,9 @@ public class GameManager : MonoBehaviour
 
     public IPlatformManager PlatformManager { get; private set; }
     public IScoreManager ScoreManager { get; private set; }
-        public ICameraManager CameraManager { get; private set; }
-public bool IsGameOver;
+    public ICameraManager CameraManager { get; private set; }
 
-    private List<MovingPlatform> _platforms; 
+    private List<MovingPlatform> _platforms;
 
     private void Start()
     {
@@ -28,12 +26,11 @@ public bool IsGameOver;
         PlatformManager = new PlatformManager();
         ScoreManager = new ScoreManager();
         CameraManager = new CameraManager(gameCamera);
+        isGameOver = false;
         _platforms = new List<MovingPlatform>
         {
             PlatformManager.CreatePlatform(prefab)
         };
-        isGameOver = false;
-        PlatformManager.CreatePlatform(prefab);
     }
 
     private void OnMouseDown()
@@ -44,15 +41,15 @@ public bool IsGameOver;
     public void UpdateGameState()
     {
         PlatformManager.StopPlatform();
-        
+
         if (PlatformManager.PlatformMissed())
         {
             isGameOver = true;
             return;
         }
-        
+
         PlatformManager.CutPlatform();
-        ScoreManager.UpdateScore(_platforms.LastOrDefault(), _platforms.ElementAtOrDefault(_platforms.Count-2));
+        ScoreManager.UpdateScore(_platforms.LastOrDefault(), _platforms.ElementAtOrDefault(_platforms.Count - 2));
         _platforms.Add(PlatformManager.CreatePlatform(prefab));
         CameraManager.MoveUp(Constants.MovingPlatform.InitialScaleY);
     }

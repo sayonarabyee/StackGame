@@ -10,6 +10,7 @@ namespace Tests.PlayModeTests
     public class GameManagerTests
     {
         private GameManager _gameManager;
+        
         #region Configuration
 
         [SetUp]
@@ -36,7 +37,7 @@ namespace Tests.PlayModeTests
         #region UpdateGameState
 
         [UnityTest]
-        public IEnumerator UpdateGameState_CorrectData_IncreasePlatformsCount()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_IncreasePlatformsCount()
         {
             var initialCount = Object.FindObjectsOfType<MovingPlatform>().Length;
 
@@ -49,10 +50,8 @@ namespace Tests.PlayModeTests
         }
         
         [UnityTest]
-        public IEnumerator UpdateGameState_CorrectData_ScoreGreaterThanZero()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_ScoreGreaterThanZero()
         {
-            _gameManager.StartGame();
-
             yield return WaitForNextPlatform();
 
             _gameManager.UpdateGameState();
@@ -61,7 +60,7 @@ namespace Tests.PlayModeTests
         }
 
         [UnityTest]
-        public IEnumerator UpdateGameState_CorrectData_CurrentPlatformMoving()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_CurrentPlatformMoving()
         {
             var platform = Object.FindObjectsOfType<MovingPlatform>().Last();
 
@@ -74,7 +73,7 @@ namespace Tests.PlayModeTests
         }
 
         [UnityTest]
-        public IEnumerator UpdateGameState_CorrectData_PreviousPlatformStopped()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_PreviousPlatformStopped()
         {
             yield return WaitForNextPlatform();
 
@@ -85,7 +84,7 @@ namespace Tests.PlayModeTests
         }
         
         [UnityTest]
-        public IEnumerator UpdateGameState_SecondPlatform_CorrectPosition()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_SecondPlatformPositionIsCorrect()
         {
             yield return WaitForNextPlatform();
 
@@ -99,7 +98,7 @@ namespace Tests.PlayModeTests
         }
         
         [UnityTest]
-        public IEnumerator UpdateGameState_SecondPlatform_CorrectSpeed()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_SecondPlatformSpeedIsCorrect()
         {
             yield return WaitForNextPlatform();
 
@@ -110,7 +109,7 @@ namespace Tests.PlayModeTests
         }
         
         [UnityTest]
-        public IEnumerator UpdateGameState_SecondPlatform_CorrectSpeedVector()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_SecondPlatformSpeedVectorIsCorrect()
         {
             yield return WaitForNextPlatform();
 
@@ -121,7 +120,7 @@ namespace Tests.PlayModeTests
         }
 
         [UnityTest]
-        public IEnumerator UpdateGameState_TenTimes_AllPlatformsNotNull()
+        public IEnumerator UpdateGameState_TenTimesSuccessfullyStoppedPlatform_AllPlatformsNotNull()
         {
             var expectedPlatformCount = 10;
 
@@ -141,7 +140,7 @@ namespace Tests.PlayModeTests
         }
         
         [UnityTest]
-        public IEnumerator UpdateGameState_CameraPosition_CameraYPositionIncreased()
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_CameraYPositionIncreased()
         {
             var cameraPos = _gameManager.gameCamera.gameObject.transform.position;
             yield return WaitForNextPlatform();
@@ -152,14 +151,44 @@ namespace Tests.PlayModeTests
         }
         
         [UnityTest]
-        public IEnumerator UpdateGameState_GameOver_CameraYPositionNotIncreased()
+        public IEnumerator UpdateGameState_UnsuccessfullyStoppedPlatform_CameraYPositionNotIncreased()
         {
             var cameraPos = _gameManager.gameCamera.gameObject.transform.position;
             
             yield return null;
             _gameManager.UpdateGameState();
 
-            Assert.AreEqual(_gameManager.gameCamera.transform.position.y, cameraPos.y, Constants.Delta);
+            Assert.AreEqual(cameraPos.y, _gameManager.gameCamera.transform.position.y, Constants.Delta);
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_SuccessfullyStoppedPlatform_GameIsNotOver()
+        {
+            yield return WaitForNextPlatform();
+            _gameManager.UpdateGameState();
+
+            Assert.False(_gameManager.isGameOver);
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_UnsuccessfullyStoppedPlatform_GameIsOver()
+        {
+            yield return null;
+            _gameManager.UpdateGameState();
+
+            Assert.True(_gameManager.isGameOver);
+        }
+        
+        [UnityTest]
+        public IEnumerator UpdateGameState_UnsuccessfullyStoppedPlatform_PlatformIsNotCreated()
+        {
+            var initialCount = Object.FindObjectsOfType<MovingPlatform>().Length;            
+            
+            yield return null;
+            _gameManager.UpdateGameState();
+            var actualCount = Object.FindObjectsOfType<MovingPlatform>().Length;            
+
+            Assert.AreEqual(initialCount, actualCount);
         }
 
         #endregion
