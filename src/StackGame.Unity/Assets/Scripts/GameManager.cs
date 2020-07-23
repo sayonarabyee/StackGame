@@ -3,6 +3,7 @@ using System.Linq;
 using Interfaces;
 using Services;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -18,10 +19,11 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        StartGame();
+        ClearScene();
+        StartNewGame();
     }
 
-    public void StartGame()
+    public void StartNewGame()
     {
         PlatformManager = new PlatformManager();
         ScoreManager = new ScoreManager();
@@ -52,5 +54,16 @@ public class GameManager : MonoBehaviour
         ScoreManager.UpdateScore(_platforms.LastOrDefault(), _platforms.ElementAtOrDefault(_platforms.Count - 2));
         _platforms.Add(PlatformManager.CreatePlatform(prefab));
         CameraManager.MoveUp(Constants.MovingPlatform.InitialScaleY);
+    }
+
+    private void ClearScene()
+    {
+        var platforms = SceneManager.GetActiveScene()
+            .GetRootGameObjects()
+            .Where(x=>x.CompareTag("movingPlatform"));
+        foreach (var platform in platforms)
+        {
+            Destroy(platform);
+        }        
     }
 }

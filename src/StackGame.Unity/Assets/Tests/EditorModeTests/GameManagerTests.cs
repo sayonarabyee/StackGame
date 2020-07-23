@@ -11,7 +11,7 @@ namespace Tests.EditorModeTests
         [Test]
         public void StartGame_CorrectStartGame_PlatformManagerNotNull()
         {
-            GameManager.StartGame();
+            GameManager.StartNewGame();
             
             Assert.NotNull(GameManager.PlatformManager);
         }
@@ -19,7 +19,7 @@ namespace Tests.EditorModeTests
         [Test]
         public void StartGame_CorrectStartGame_ScoreManagerNotNull()
         {
-            GameManager.StartGame();
+            GameManager.StartNewGame();
             
             Assert.NotNull(GameManager.ScoreManager);
         }
@@ -27,7 +27,7 @@ namespace Tests.EditorModeTests
         [Test]
         public void StartGame_CorrectStartGame_ScoreIsZero()
         {
-            GameManager.StartGame();
+            GameManager.StartNewGame();
             
             Assert.Zero(GameManager.ScoreManager.Score);
         }
@@ -35,7 +35,7 @@ namespace Tests.EditorModeTests
         [Test]
         public void StartGame_CorrectStartGame_FirstPlatformNotNull()
         {
-            GameManager.StartGame();
+            GameManager.StartNewGame();
             var platform = Object.FindObjectsOfType<MovingPlatform>().First();
             
             Assert.NotNull(platform);
@@ -44,7 +44,7 @@ namespace Tests.EditorModeTests
         [Test]
         public void StartGame_CorrectStartGame_FirstPlatformMoving()
         {
-            GameManager.StartGame();
+            GameManager.StartNewGame();
             var platform = Object.FindObjectsOfType<MovingPlatform>().First();
             
             Assert.AreEqual(platform.initialSpeed, Constants.MovingPlatform.InitialSpeed);
