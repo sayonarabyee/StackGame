@@ -10,12 +10,16 @@ namespace Tests.EditorModeTests
     {
         protected GameManager GameManager;
         protected IPlatformManager PlatformManager;
+        protected IScoreManager ScoreManager;
+        protected ICameraManager CameraManager;
         
         [SetUp]
         public void Setup()
         {
             GameManager = GetGameManager();
             PlatformManager = new PlatformManager();
+            ScoreManager = new ScoreManager();
+            CameraManager = new CameraManager(GameManager.gameCamera);
         }
         
         [TearDown]

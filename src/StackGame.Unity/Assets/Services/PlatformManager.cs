@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Interfaces;
 using UnityEngine;
@@ -13,26 +14,30 @@ namespace Services
             PlatformsCount = 0;
         }
 
-        public void StopPlatform(int? platformNumber = null)
+        #region Public Methods
+
+        public MovingPlatform CreatePlatform(GameObject platform)
         {
-            var allPlatforms = Object.FindObjectsOfType<MovingPlatform>();
-
-            var platform = platformNumber == null
-                ? allPlatforms.First()
-                : allPlatforms.ElementAtOrDefault(platformNumber.Value);
-
-            if (platform == null)
-                return;
-
-            platform.initialSpeed = 0;
+            var previousPlatform = GetCurrentPlatform();
+            var initialPosition = GetPlatformInitialPosition(PlatformsCount);
+            var currentPlatform = Object.Instantiate(platform, initialPosition, Quaternion.identity)
+                .GetComponent<MovingPlatform>();
+            currentPlatform.isSpeedAxisZ = IsAxisZPlatform(PlatformsCount);
+            currentPlatform.initialSpeed = Constants.MovingPlatform.InitialSpeed;
+            var currentPlatformTransform = currentPlatform.transform;
+            currentPlatformTransform.localScale = previousPlatform != null
+                ? previousPlatform.transform.localScale
+                : currentPlatformTransform.localScale;
+            PlatformsCount++;
+            return currentPlatform;
         }
 
-        //TODO: s: refactor it please
-        //TODO: s: write test for it
+        //TODO: s: refactor this please
+        //TODO: s: write test for this
         public void CutPlatform()
         {
-            var currentPlatform = Object.FindObjectsOfType<MovingPlatform>().First();
-            var lastPlatform = Object.FindObjectsOfType<MovingPlatform>().ElementAtOrDefault(1);
+            var currentPlatform = GetCurrentPlatform();
+            var lastPlatform = GetPreviousPlatform();
             var main = GameObject.Find("MainCube");
             if (PlatformsCount == 1)
             {
@@ -82,30 +87,16 @@ namespace Services
             }
         }
 
-        public void CreatePlatform(GameObject platform)
-        {
-            var previousPlatform = Object.FindObjectsOfType<MovingPlatform>()?.FirstOrDefault();
-            var initialPosition = GetPlatformInitialPosition(PlatformsCount);
-            var currentPlatform = Object.Instantiate(platform, initialPosition, Quaternion.identity).GetComponent<MovingPlatform>();
-            currentPlatform.isSpeedAxisZ = IsAxisZPlatform(PlatformsCount);
-            currentPlatform.initialSpeed = Constants.MovingPlatform.InitialSpeed;
-            var currentPlatformTransform = currentPlatform.transform;
-            currentPlatformTransform.localScale = previousPlatform != null
-                ? previousPlatform.transform.localScale
-                : currentPlatformTransform.localScale;
-            PlatformsCount++;
-        }
-
         public bool PlatformMissed()
         {
-            var platforms = Object.FindObjectsOfType<MovingPlatform>();
-            var current = platforms.First().transform;
+            var platforms = GetPlatforms();
+            var current = GetCurrentPlatform().transform;
             var currentPosition = current.position;
             var currentScale = current.localScale;
             bool isAxisXMissed;
             bool isAxisZMissed;
-            
-            if (platforms.Length == 1)
+
+            if (platforms?.Count() == 1)
             {
                 isAxisZMissed = IsAxisMissed(currentPosition.z, Constants.Cube.InitialPosZ,
                     currentScale.z, Constants.Cube.InitialScaleZ);
@@ -114,11 +105,11 @@ namespace Services
             }
             else
             {
-                var platform = platforms.ElementAtOrDefault(1)?.transform;
-                
+                var platform = GetPreviousPlatform()?.transform;
+
                 if (platform == null)
                     return false;
-                
+
                 var previousPosition = platform.position;
                 var previousScale = platform.localScale;
                 isAxisZMissed = IsAxisMissed(currentPosition.z, previousPosition.z,
@@ -130,7 +121,31 @@ namespace Services
             return isAxisXMissed || isAxisZMissed;
         }
 
+        public void StopPlatform(int? platformNumber = null)
+        {
+            var platform = platformNumber == null
+                ? GetCurrentPlatform()
+                : GetPlatforms().ElementAtOrDefault(platformNumber.Value);
+
+            if (platform == null)
+                return;
+
+            platform.initialSpeed = 0;
+        }
+
+        #endregion
+
         #region Private Methods
+
+        private static MovingPlatform GetCurrentPlatform()
+        {
+            return GetPlatforms().FirstOrDefault();
+        }
+
+        private static MovingPlatform GetPreviousPlatform()
+        {
+            return GetPlatforms().ElementAtOrDefault(1);
+        }
 
         private static Vector3 GetPlatformInitialPosition(int platformNumber)
         {
@@ -168,6 +183,11 @@ namespace Services
             var previousMax = previousPosition + previousScale / 2;
 
             return previousMin > currentMax || previousMax < currentMin;
+        }
+
+        private static IEnumerable<MovingPlatform> GetPlatforms()
+        {
+            return Object.FindObjectsOfType<MovingPlatform>();
         }
 
         #endregion
